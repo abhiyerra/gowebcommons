@@ -23,7 +23,7 @@ func (c *Cache) Get(cacheKey string, runner func() interface{}) interface{} {
 	return c.cache[cacheKey]
 }
 
-func NewCache() (c Cache) {
+func New() (c Cache) {
 	c.cache = make(map[string]interface{})
 	return
 }

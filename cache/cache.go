@@ -1,14 +1,15 @@
 package cache
 
 import (
+	"encoding/json"
 	"log"
 )
 
 type Cache struct {
-	cache map[string]interface{}
+	cache map[string][]byte
 }
 
-func (c *Cache) Get(cacheKey string, runner func() interface{}) interface{} {
+func (c *Cache) Get(cacheKey string, runner func() interface{}) []byte {
 	if cacheKey == "" {
 		return nil
 	}
@@ -18,12 +19,16 @@ func (c *Cache) Get(cacheKey string, runner func() interface{}) interface{} {
 		return b
 	}
 
-	c.cache[cacheKey] = runner()
+	b, err := json.Marshal(runner())
+	if err != nil {
+		log.Println("error:", err)
+	}
 
+	c.cache[cacheKey] = b
 	return c.cache[cacheKey]
 }
 
 func New() (c Cache) {
-	c.cache = make(map[string]interface{})
+	c.cache = make(map[string][]byte)
 	return
 }
